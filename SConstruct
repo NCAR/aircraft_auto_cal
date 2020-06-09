@@ -1,7 +1,14 @@
 # -*- python -*-
 ## 2010, Copyright University Corporation for Atmospheric Research
 
-Import('env')
+import os
+import eol_scons
+
+# eol_scons.debug.SetDebug("true")
+#
+# Don't load tools that perform compiler or pkg-config checks
+# until the cross tool is loaded, and PKG_CONFIG_PATH is set.
+env = Environment(tools=['default', 'gitinfo'])
 
 # The qt4 tool updates the environment from eol_scons.GlobalVariables().
 # If the original value of PREFIX is set as a global Variable in the top
