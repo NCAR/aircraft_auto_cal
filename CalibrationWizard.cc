@@ -31,7 +31,12 @@
 
 #include <unistd.h>
 
+#include <QApplication>
 #include <QCursor>
+#include <QLabel>
+#include <QMessageBox>
+#include <QPushButton>
+#include <QRadioButton>
 
 CalibrationWizard *CalibrationWizard::_instance;
 
