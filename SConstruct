@@ -8,7 +8,7 @@ import eol_scons
 #
 # Don't load tools that perform compiler or pkg-config checks
 # until the cross tool is loaded, and PKG_CONFIG_PATH is set.
-env = Environment(tools=['default', 'qt4', 'qtgui', 'qtcore', 'qtnetwork', 'nidas', 'gsl'])
+env = Environment(tools=['default', 'qt5', 'qtwidgets', 'qtcore', 'qtnetwork', 'nidas', 'gsl'])
 
 opts = eol_scons.GlobalVariables('config.py')
 opts.AddVariables(('PREFIX',

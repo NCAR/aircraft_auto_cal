@@ -35,7 +35,7 @@
 #include <map>
 #include <string>
 
-#include <QtGui>
+#include <QtWidgets>
 #include <QThread>
 #include <QString>
 
@@ -63,7 +63,7 @@ public:
 
     inline void setTestVoltage() { testVoltage = true; };
 
-    bool setup(QString host) throw();
+    bool setup(QString host);
 
     void run();
 

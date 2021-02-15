@@ -28,7 +28,7 @@
 #ifndef CalibrationWizard_H
 #define CalibrationWizard_H
 
-#include <QtGui>
+#include <QtWidgets>
 #include <QWizard>
 #include <QGroupBox>
 #include <QDialogButtonBox>

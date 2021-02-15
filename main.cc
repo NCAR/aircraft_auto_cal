@@ -46,9 +46,6 @@ int main(int argc, char *argv[])
 {
 //  logx::ParseLogArgs (argc, argv, true/*skip usage*/);
 
-    // TODO find out how '.qrc' files are processed by 'qt4.py'
-//  Q_INIT_RESOURCE(CalibrationWizard);
-
     // Create the application so qt can extract its options.
     QApplication app(argc, argv);
 
@@ -63,6 +60,7 @@ int main(int argc, char *argv[])
             ::exit(0);
         }
     }
+
     // Install international language translator
     QString translatorFileName = QLatin1String("qt_");
     translatorFileName += QLocale::system().name();

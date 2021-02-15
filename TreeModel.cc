@@ -71,7 +71,7 @@
     models.
 */
 
-#include <QtGui>
+#include <QtWidgets>
 
 #include "TreeItem.h"
 #include "TreeModel.h"
@@ -114,7 +114,7 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const
 Qt::ItemFlags TreeModel::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
-        return 0;
+        return Qt::NoItemFlags;
 
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
@@ -197,7 +197,7 @@ void TreeModel::setupModelData(const QStringList &lines, TreeItem *parent)
 
         if (!lineData.isEmpty()) {
             // Read the column data from the rest of the line.
-            QStringList columnStrings = lineData.split("\t", QString::SkipEmptyParts);
+            QStringList columnStrings = lineData.split("\t", Qt::SkipEmptyParts);
             QList<QVariant> columnData;
             for (int column = 0; column < columnStrings.count(); ++column)
                 columnData << columnStrings[column];

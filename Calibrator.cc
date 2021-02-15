@@ -89,7 +89,7 @@ Calibrator::~Calibrator()
 };
 
 
-bool Calibrator::setup(QString host) throw()
+bool Calibrator::setup(QString host)
 {
     cout << "Calibrator::setup()" << endl;
 

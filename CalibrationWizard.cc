@@ -266,7 +266,7 @@ void AutoCalPage::createTree()
     connect(treeView->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
                                     this, SLOT(selectionChanged(const QItemSelection&, const QItemSelection&)));
 
-    treeView->setCurrentIndex(treeView->rootIndex().child(0,0));
+    treeView->setCurrentIndex(treeView->model()->index(0,0));
 }
 
 
@@ -473,7 +473,7 @@ void TestA2DPage::createTree()
     connect(treeView->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
                                     this, SLOT(selectionChanged(const QItemSelection&, const QItemSelection&)));
 
-    treeView->setCurrentIndex(treeView->rootIndex().child(0,0));
+    treeView->setCurrentIndex(treeView->model()->index(0,0));
 }
 
 
@@ -483,7 +483,6 @@ void TestA2DPage::dispVolts()
     if (dsmId == -1) return;
     if (dsmId == devId) return;
 
-    QString raw, mes;
     for (int chn = 0; chn < numA2DChannels; chn++) {
         if ( acc->calActv[0][dsmId][devId][chn] == SKIP ) continue;
 
@@ -493,10 +492,13 @@ void TestA2DPage::dispVolts()
         _cals.push_back( acc->GetOldSlope(dsmId, devId, chn) );
 
         // apply the coefficients to the raw measured values
+        QString raw, mes;
         float voltage = acc->testData[dsmId][devId][chn];
         float applied = numeric::PolyEval(_cals, voltage);
-        raw.sprintf("%7.4f", voltage);
-        mes.sprintf("%7.4f", applied);
+        QTextStream rstr(&raw);
+        rstr << qSetFieldWidth(7) << qSetRealNumberPrecision(4) << voltage;
+        QTextStream mstr(&mes);
+        mstr << qSetFieldWidth(7) << qSetRealNumberPrecision(4) << applied;
         RawVolt[chn]->setText( raw );
         MesVolt[chn]->setText( mes );
     }
