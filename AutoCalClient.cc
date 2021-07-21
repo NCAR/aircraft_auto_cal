@@ -881,10 +881,10 @@ void AutoCalClient::DisplayResults()
                                 QTextStream(&qstr) << QString::fromStdString(devNames[id(dsmId, devId)]);
                                 QTextStream(&qstr) << "\n\nchannel: " << channel << " level: " << level << "v";
                                 QTextStream(&qstr) << " is out of range.\n\nYou may need to adjust ";
-                                QTextStream(&qstr) << "the 2 volt offset potentiometer on this card.";
-                                cout << "----------------------------------------------" << Qt::endl;
-                                cout << qstr << Qt::endl;
-                                cout << "----------------------------------------------" << Qt::endl;
+                                QTextStream(&qstr) << "the 2 volt offset potentiometer on this card.\n";
+                                cout << "----------------------------------------------\n";
+                                cout << qstr;
+                                cout << "----------------------------------------------\n";
                                 emit errMessage(qstr);
                                 break;
                             }
@@ -935,9 +935,9 @@ void AutoCalClient::DisplayResults()
                         QTextStream cout(stdout, QIODevice::WriteOnly);
 
                         QTextStream(&devErr) << "defective card?    ";
-                        QTextStream(&devErr) << calFileName[dsmId][devId].c_str() << Qt::endl << Qt::endl;
-                        QTextStream(&devErr) << "channel: " << channel << " level: " << level << "v" << Qt::endl;
-                        QTextStream(&devErr) << "Internal uncalibrated voltage measures as "<< aVoltageMean << "v" << Qt::endl;
+                        QTextStream(&devErr) << calFileName[dsmId][devId].c_str();
+                        QTextStream(&devErr) << "\n\nchannel: " << channel << " level: " << level << "v\n";
+                        QTextStream(&devErr) << "Internal uncalibrated voltage measures as "<< aVoltageMean << "v\n";
                     }
                 }
                 size_t nPts = voltageLevel.size();
