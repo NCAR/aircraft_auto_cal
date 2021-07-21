@@ -17,8 +17,8 @@ opts.AddVariables(('PREFIX',
 
 opts.Update(env)
 
-# Override CXXFLAGS in order to turn off -Weffc++ for now
-env['CXXFLAGS'] = [ '-Wall','-O2' ]
+# Remove -Wno-deprecated once nidas has throw's removed.
+env['CXXFLAGS'] = [ '-Wall','-O2', '-std=c++11', '-Wno-deprecated' ]
 
 sources = Split("""
     main.cc
