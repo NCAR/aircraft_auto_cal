@@ -22,10 +22,11 @@ env['CXXFLAGS'] = [ '-Wall','-O2', '-std=c++11', '-Wno-deprecated' ]
 
 sources = Split("""
     main.cc
+    CalibrationWizard.cc
+    TestA2DPage.cc
+    AutoCalClient.cc
     TreeItem.cc
     TreeModel.cc
-    AutoCalClient.cc
-    CalibrationWizard.cc
     Calibrator.cc
 """)
 

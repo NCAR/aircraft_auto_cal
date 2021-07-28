@@ -31,11 +31,10 @@
 #include <nidas/util/SocketAddress.h>
 #include <nidas/dynld/RawSampleInputStream.h>
 
-#include <list>
 #include <map>
 #include <string>
 
-#include <QtWidgets>
+//#include <QtWidgets>
 #include <QThread>
 #include <QString>
 
