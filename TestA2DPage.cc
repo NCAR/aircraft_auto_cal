@@ -87,8 +87,6 @@ void TestA2DPage::createTree()
 
     connect(treeView->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&, const QItemSelection&)),
                                     this, SLOT(selectionChanged(const QItemSelection&, const QItemSelection&)));
-
-    treeView->setCurrentIndex(treeView->model()->index(0,0));
 }
 
 
@@ -203,6 +201,7 @@ void TestA2DPage::selectionChanged(const QItemSelection &selected, const QItemSe
 
 void TestA2DPage::createGrid()
 {
+    cout << "TestA2DPage::createGrid" << endl;
     gridGroupBox = new QGroupBox(tr("Set internal voltages here"));
 
     QGridLayout *layout = new QGridLayout;
@@ -309,6 +308,8 @@ void TestA2DPage::initializePage()
     createTree();
     createGrid();
 
+    treeView->setCurrentIndex(treeView->model()->index(0,0));
+
     connect(this, SIGNAL(TestVoltage(int, int)),
             acc,    SLOT(TestVoltage(int, int)));
 
@@ -318,9 +319,10 @@ void TestA2DPage::initializePage()
     connect(acc,  SIGNAL(dispVolts()),
             this,   SLOT(dispVolts()));
 
+/* Doesn't exist??  --cjw Aug/2021
     connect(calibrator, SIGNAL(setValue(int)),
             this,         SLOT(paint()) );
-
+*/
     mainLayout = new QHBoxLayout;
     mainLayout->addWidget(treeView);
     mainLayout->addWidget(gridGroupBox);
