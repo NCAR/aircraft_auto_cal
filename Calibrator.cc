@@ -100,7 +100,7 @@ bool Calibrator::setup(QString host)
         // local data file is a copy of:
         // /scr/raf/Raw_Data/PLOWS/20091106_161332_ff04.ads
         list<string> dataFileNames;
-        dataFileNames.push_back("/home/data/20091106_161332_ff04.ads");
+        dataFileNames.push_back("/home/data/Raw_Data/20210529_132233_rf01.ads");
         nidas::core::FileSet* fset =
             nidas::core::FileSet::getFileSet(dataFileNames);
         iochan = fset->connect();
@@ -156,7 +156,8 @@ bool Calibrator::setup(QString host)
                     return true;
 
                 // skip non-Analog type sensors
-                if (sensor->getClassName().compare("raf.DSMAnalogSensor"))
+                if (sensor->getClassName().compare("raf.DSMAnalogSensor") &&
+                    sensor->getClassName().compare("DSC_A2DSensor"))
                     continue;
 
                 // skip non-responsive of miss-configured sensors
