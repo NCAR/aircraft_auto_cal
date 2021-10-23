@@ -161,7 +161,7 @@ bool Calibrator::setup(QString host, QString mode)
                     continue;
                 if (sensor->getClassName().compare("raf.DSMAnalogSensor") &&    // ncar_a2d
                     sensor->getClassName().compare("DSC_A2DSensor") &&  // Diamond - ddmat
-                    sensor->getClassName().compare("SerialAnalog"))     // gpDAQ
+                    sensor->getClassName().compare("raf.A2D_Serial"))   // gpDAQ
                     continue;
 
                 // skip non-responsive of miss-configured sensors

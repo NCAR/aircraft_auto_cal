@@ -525,7 +525,7 @@ enum stateEnum AutoCalClient::SetNextCalVoltage(enum stateEnum state)
         state = DONE;
     }
     bool alive       = false;
-    int level        =   iLevel->first;
+    int level        = iLevel->first;
     dsm_a_type* Dsms = &(iLevel->second);
     std::cout << "SNCV " << level << std::endl;
     VltLvl = level;
