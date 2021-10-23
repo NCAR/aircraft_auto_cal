@@ -63,8 +63,8 @@ public:
 };
 
 Calibrator::Calibrator( AutoCalClient *acc ):
-   testVoltage(false),
-   canceled(false),
+   _testVoltage(false),
+   _canceled(false),
    _acc(acc),
    _sis(0),
    _pipeline(0)
@@ -89,7 +89,7 @@ Calibrator::~Calibrator()
 };
 
 
-bool Calibrator::setup(QString host)
+bool Calibrator::setup(QString host, QString mode)
 {
     cout << "Calibrator::setup()" << endl;
 
@@ -152,12 +152,16 @@ bool Calibrator::setup(QString host)
             for (si = allSensors.begin(); si != allSensors.end(); ++si) {
                 DSMSensor* sensor = *si;
 
-                if (canceled)
+                if (_canceled)
                     return true;
 
                 // skip non-Analog type sensors
+                // Cal mode is for ncar_a2d only.  Diag nostic mode is for all
+                if (mode == "cal" && sensor->getClassName().compare("raf.DSMAnalogSensor"))
+                    continue;
                 if (sensor->getClassName().compare("raf.DSMAnalogSensor") &&
-                    sensor->getClassName().compare("DSC_A2DSensor"))
+                    sensor->getClassName().compare("DSC_A2DSensor") &&
+                    sensor->getClassName().compare("A2D_Serial"))
                     continue;
 
                 // skip non-responsive of miss-configured sensors
@@ -230,9 +234,9 @@ void Calibrator::run()
 
         try {
             enum stateEnum state = GATHER;
-            while (testVoltage) {
+            while (_testVoltage) {
                 _sis->readSamples();  // see AutoCalClient::receive
-                if (canceled) {
+                if (_canceled) {
                     cout << "canceling..." << endl;
                     state = DONE;
                     break;
@@ -249,9 +253,9 @@ void Calibrator::run()
                     break;
 
                 cout << "gathering..." << endl;
-                while ( testVoltage || !_acc->Gathered() ) {
+                while ( _testVoltage || !_acc->Gathered() ) {
 
-                    if (canceled) {
+                    if (_canceled) {
                         cout << "canceling..." << endl;
                         state = DONE;
                         break;
@@ -259,7 +263,7 @@ void Calibrator::run()
                     _sis->readSamples();  // see AutoCalClient::receive
 
                     // update progress bar
-                    if (!testVoltage)
+                    if (!_testVoltage)
                         emit setValue(_acc->progress);
                 }
             }
@@ -295,5 +299,5 @@ void Calibrator::run()
 
 void Calibrator::cancel()
 {
-    canceled = true;
+    _canceled = true;
 }

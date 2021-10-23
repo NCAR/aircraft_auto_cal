@@ -60,9 +60,9 @@ public:
 
     ~Calibrator();
 
-    inline void setTestVoltage() { testVoltage = true; };
+    inline void setTestVoltage() { _testVoltage = true; };
 
-    bool setup(QString host);
+    bool setup(QString host, QString mode);
 
     void run();
 
@@ -73,9 +73,9 @@ public slots:
     void cancel();
 
 private:
-    bool testVoltage;
+    bool _testVoltage;
 
-    bool canceled;
+    bool _canceled;
 
     AutoCalClient* _acc;
 

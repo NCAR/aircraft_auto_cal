@@ -302,7 +302,7 @@ void TestA2DPage::initializePage()
     acc->setTestVoltage(-1, -1);
 
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-    if (calibrator->setup("acserver")) return;
+    if (calibrator->setup("acserver", "diag")) return;
     QApplication::restoreOverrideCursor();
 
     createTree();
