@@ -159,9 +159,9 @@ bool Calibrator::setup(QString host, QString mode)
                 // Cal mode is for ncar_a2d only.  Diag nostic mode is for all
                 if (mode == "cal" && sensor->getClassName().compare("raf.DSMAnalogSensor"))
                     continue;
-                if (sensor->getClassName().compare("raf.DSMAnalogSensor") &&
-                    sensor->getClassName().compare("DSC_A2DSensor") &&
-                    sensor->getClassName().compare("A2D_Serial"))
+                if (sensor->getClassName().compare("raf.DSMAnalogSensor") &&    // ncar_a2d
+                    sensor->getClassName().compare("DSC_A2DSensor") &&  // Diamond - ddmat
+                    sensor->getClassName().compare("SerialAnalog"))     // gpDAQ
                     continue;
 
                 // skip non-responsive of miss-configured sensors
