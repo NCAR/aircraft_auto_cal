@@ -28,7 +28,6 @@
 
 #include <nidas/core/DSMSensor.h>
 #include <nidas/core/SampleClient.h>
-#include <nidas/linux/ncar_a2d.h>
 
 #include <map>
 #include <list>
@@ -37,7 +36,7 @@
 
 #include <QObject>
 
-#define NUM_NCAR_A2D_CHANNELS         8       // Number of A/D's per card
+#define MAX_A2D_CHANNELS         32       // Number of A/D's per card
 #define NSAMPS 100
 //#define SIMULATE
 
@@ -47,6 +46,14 @@ using namespace std;
 enum stateEnum { GATHER, DONE, DEAD };
 
 enum fillState { SKIP, PEND, EMPTY, FULL };
+
+struct a2d_setup
+{
+    int gain[MAX_A2D_CHANNELS];    // gain settings
+    int offset[MAX_A2D_CHANNELS];  // Offset flags
+    int calset[MAX_A2D_CHANNELS];  // cal voltage channels
+    int vcal;                           // cal voltage
+};
 
 /**
  * @class AutoCalClient
@@ -72,7 +79,7 @@ public:
 
     bool readCalFile(DSMSensor* sensor);
 
-    ncar_a2d_setup GetA2dSetup(int dsmId, int devId);
+    a2d_setup GetA2dSetup(int dsmId, int devId);
 
     bool Setup(DSMSensor* sensor);
 

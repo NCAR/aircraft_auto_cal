@@ -114,7 +114,7 @@ bool AutoCalClient::readCalFile(DSMSensor* sensor)
             calFileTime[dsmId][devId][1<<gain][bplr] = calTime;
 
             // pre set with default slope and intercept values.
-            for (int i = 0; i < NUM_NCAR_A2D_CHANNELS; i++) {
+            for (int i = 0; i < MAX_A2D_CHANNELS; i++) {
                 calFileIntcp[dsmId][devId][i][1<<gain][bplr] = 0.0;
                 calFileSlope[dsmId][devId][i][1<<gain][bplr] = 1.0;
             }
@@ -147,7 +147,7 @@ bool AutoCalClient::readCalFile(DSMSensor* sensor)
     // gain bipolar(1=true,0=false) intcp0 slope0 intcp1 slope1 ... intcp7 slope7
     while (sysTime >= cf->nextTime().toUsecs()) {
 
-        int nd = 2 + NUM_NCAR_A2D_CHANNELS * 2;
+        int nd = 2 + MAX_A2D_CHANNELS * 2;
         float d[nd];
         try {
             n_u::UTime ut;
@@ -158,7 +158,7 @@ bool AutoCalClient::readCalFile(DSMSensor* sensor)
             int gain = (int)d[0];
             int bplr = (int)d[1];
 
-            for (int i = 0; i < std::min((n-2)/2,NUM_NCAR_A2D_CHANNELS); i++) {
+            for (int i = 0; i < std::min((n-2)/2, MAX_A2D_CHANNELS); i++) {
                 calFileIntcp[dsmId][devId][i][gain][bplr] = d[2+i*2];
                 calFileSlope[dsmId][devId][i][gain][bplr] = d[3+i*2];
                 calFileTime[dsmId][devId][gain][bplr] = calTime;
@@ -195,9 +195,10 @@ bool AutoCalClient::readCalFile(DSMSensor* sensor)
 }
 
 
-ncar_a2d_setup AutoCalClient::GetA2dSetup(int dsmId, int devId)
+a2d_setup AutoCalClient::GetA2dSetup(int dsmId, int devId)
 {
-    ncar_a2d_setup setup;
+    a2d_setup setup;
+    int nChannels = 0;
 
     string dsmName = dsmNames[dsmId];
     string devName = devNames[id(dsmId, devId)];
@@ -226,7 +227,8 @@ ncar_a2d_setup AutoCalClient::GetA2dSetup(int dsmId, int devId)
             return setup;
         }
         dsm_xmlrpc_client.close();
-        for (uint i = 0; i < NUM_NCAR_A2D_CHANNELS; i++) {
+        nChannels = get_result["nChannels"];
+        for (int i = 0; i < nChannels; i++) {
             setup.gain[i]   = get_result["gain"][i];
             setup.offset[i] = get_result["offset"][i];
             setup.calset[i] = get_result["calset"][i];
@@ -237,7 +239,7 @@ ncar_a2d_setup AutoCalClient::GetA2dSetup(int dsmId, int devId)
         std::cout << "xmlrpc client NOT responding" << std::endl;
     }
 #else
-    for (uint i = 0; i < NUM_NCAR_A2D_CHANNELS; i++) {
+    for (int i = 0; i < nChannels; i++) {
         setup.gain[i]   = Gains[dsmId][devId][i];
         setup.offset[i] = Bplrs[dsmId][devId][i];
         setup.calset[i] = 1;
@@ -307,7 +309,8 @@ bool AutoCalClient::Setup(DSMSensor* sensor)
     get_params["device"] = devName;
     get_params["action"] = "getA2DSetup";
     std::cout << "  get_params: " << get_params.toXml() << std::endl;
-    ncar_a2d_setup setup;
+    a2d_setup setup;
+    int nChannels = 0;
 
     try {
         if (dsm_xmlrpc_client.execute("SensorAction", get_params, get_result)) {
@@ -321,7 +324,8 @@ bool AutoCalClient::Setup(DSMSensor* sensor)
                 return true;
             }
             dsm_xmlrpc_client.close();
-            for (uint i = 0; i < NUM_NCAR_A2D_CHANNELS; i++) {
+            nChannels = get_result["nChannels"];
+            for (int i = 0; i < nChannels; i++) {
                 setup.gain[i]   = get_result["gain"][i];
                 setup.offset[i] = get_result["offset"][i];
                 setup.calset[i] = get_result["calset"][i];
@@ -391,6 +395,7 @@ bool AutoCalClient::Setup(DSMSensor* sensor)
                 bplr = (int)(parm->getNumericValue(0));
 #ifndef SIMULATE
             // compare with what is currently configured
+            // I don't understand why returned bipolar is opposite of cfg'd.  --cjw Oct2021
             if ( (setup.gain[channel] != gain) || (setup.offset[channel] != !bplr) ) {
                 ostringstream ostr;
                 ostr << "can not calibrate channel " << channel << " because it is running as: "
@@ -974,7 +979,7 @@ void AutoCalClient::DisplayResults()
             ostr << "# auto_cal results..." << std::endl;
             ostr << "# temperature: " << resultTemperature[dsmId][devId] << std::endl;
             ostr << "#  Date              Gain  Bipolar";
-            for (uint ix=0; ix<NUM_NCAR_A2D_CHANNELS; ix++)
+            for (uint ix=0; ix<MAX_A2D_CHANNELS; ix++)
                 ostr << "  CH" << ix << "-off   CH" << ix << "-slope";
             ostr << std::endl;
 
@@ -983,7 +988,7 @@ void AutoCalClient::DisplayResults()
 
                 // find out if a channel was calibrated at this range
                 uint channel = 99;
-                for (uint ix=0; ix<NUM_NCAR_A2D_CHANNELS; ix++) {
+                for (uint ix=0; ix<MAX_A2D_CHANNELS; ix++) {
                     if ( ( Channels->find(ix) != Channels->end() ) &&
                          ( Gains[dsmId][devId][ix] == GB[iGB].gain ) &&
                          ( Bplrs[dsmId][devId][ix] == GB[iGB].bplr ) ) {
@@ -997,7 +1002,7 @@ void AutoCalClient::DisplayResults()
                     ostr << setw(6) << dec << GB[iGB].gain;
                     ostr << setw(9) << dec << GB[iGB].bplr;
 
-                    for (uint ix=0; ix<NUM_NCAR_A2D_CHANNELS; ix++) {
+                    for (uint ix=0; ix<MAX_A2D_CHANNELS; ix++) {
                         if ( ( Channels->find(ix) != Channels->end() ) &&
                              ( Gains[dsmId][devId][ix] == GB[iGB].gain ) &&
                              ( Bplrs[dsmId][devId][ix] == GB[iGB].bplr ) )

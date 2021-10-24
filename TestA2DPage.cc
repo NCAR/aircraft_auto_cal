@@ -120,7 +120,7 @@ void TestA2DPage::dispVolts()
 
 void TestA2DPage::updateSelection()
 {
-    ncar_a2d_setup setup = acc->GetA2dSetup(dsmId, devId);
+    a2d_setup setup = acc->GetA2dSetup(dsmId, devId);
 
     for (int chn = 0; chn < numA2DChannels; chn++) {
         VarName[chn]->setText( QString( acc->GetVarName(dsmId, devId, chn).c_str() ) );

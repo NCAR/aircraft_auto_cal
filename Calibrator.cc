@@ -91,7 +91,7 @@ Calibrator::~Calibrator()
 
 bool Calibrator::setup(QString host, QString mode)
 {
-    cout << "Calibrator::setup()" << endl;
+    cout << "Calibrator::setup(), mode=[" << mode.toStdString() << "]\n";
 
     try {
         IOChannel* iochan = 0;
