@@ -169,7 +169,7 @@ private:
     QButtonGroup *buttonGroup;
     QHBoxLayout *mainLayout;
 
-    enum { numA2DChannels = 8 };
+    enum { numA2DChannels = 16 };
 
     QLabel *ChannelTitle;
     QLabel *VarNameTitle;
