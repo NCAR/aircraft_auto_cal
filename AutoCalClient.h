@@ -50,6 +50,8 @@ enum fillState { SKIP, PEND, EMPTY, FULL };
 struct a2d_setup
 {
     int gain[MAX_A2D_CHANNELS];    // gain settings
+    // In old system, was 0,5,10.  We switched to bool:biplor.
+    // SensorClasses are returning 0 for bipolar=true and 1 for bipolar=false.
     int offset[MAX_A2D_CHANNELS];  // Offset flags
     int calset[MAX_A2D_CHANNELS];  // cal voltage channels
     int vcal;                           // cal voltage

@@ -362,6 +362,7 @@ bool AutoCalClient::Setup(DSMSensor* sensor)
 
     list<SampleTag*>& tags = sensor->getSampleTags();
     list<SampleTag*>::const_iterator ti;
+    std::string card= get_result["card"];
     for (ti = tags.begin(); ti != tags.end(); ++ti) {
         SampleTag* tag = *ti;
 
@@ -386,13 +387,26 @@ bool AutoCalClient::Setup(DSMSensor* sensor)
             int gain=1, bplr=0;
 
             const Parameter * parm;
-            parm = var.getParameter("gain");
-            if (parm)
-                gain = (int)parm->getNumericValue(0);
+            if (card == "gpDAQ") {
+                parm = var.getParameter("ifsr");
+                if (parm)
+                    // +1 sort of a hack. ifsr=0==gain=1, ifsr=1==gain=2
+                    gain = (int)parm->getNumericValue(0) + 1;
 
-            parm = var.getParameter("bipolar");
-            if (parm)
-                bplr = (int)(parm->getNumericValue(0));
+                parm = var.getParameter("ipol");
+                if (parm)
+                    // also sort of a hack.
+                    bplr = 1 - (int)(parm->getNumericValue(0));
+            }
+            else {
+                parm = var.getParameter("gain");
+                if (parm)
+                    gain = (int)parm->getNumericValue(0);
+
+                parm = var.getParameter("bipolar");
+                if (parm)
+                    bplr = (int)(parm->getNumericValue(0));
+            }
 #ifndef SIMULATE
             // compare with what is currently configured
             // I don't understand why returned bipolar is opposite of cfg'd.  --cjw Oct2021
