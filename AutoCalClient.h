@@ -171,6 +171,7 @@ private:
 
     map<uint, string> dsmNames;                        // indexed by dsmId
     map<uint, string> devNames;                        // indexed by devId
+    map<uint, uint>   devNchannels;                    // indexed by devId
     map< int, uint>   slowestRate;                     // indexed by level
 
     typedef vector<float>             data_d_type;

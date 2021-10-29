@@ -103,6 +103,7 @@ bool AutoCalClient::readCalFile(DSMSensor* sensor)
     std::cout << "AutoCalClient::readCalFile(" << sensor->getDSMName() << ":" << sensor->getDeviceName() << ")" << std::endl;
     uint dsmId = sensor->getDSMId();
     uint devId = sensor->getSensorId();
+    int N = devNchannels[id(dsmId, devId)];
 
     dsm_time_t sysTime, calTime = 0;
     ostringstream ostr;
@@ -114,7 +115,7 @@ bool AutoCalClient::readCalFile(DSMSensor* sensor)
             calFileTime[dsmId][devId][1<<gain][bplr] = calTime;
 
             // pre set with default slope and intercept values.
-            for (int i = 0; i < MAX_A2D_CHANNELS; i++) {
+            for (int i = 0; i < N; i++) {
                 calFileCals[dsmId][devId][i][1<<gain][bplr].push_back(0.0);
                 calFileCals[dsmId][devId][i][1<<gain][bplr].push_back(1.0);
             }
@@ -158,7 +159,7 @@ bool AutoCalClient::readCalFile(DSMSensor* sensor)
             int gain = (int)d[0];
             int bplr = (int)d[1];
 
-            for (int i = 0; i < std::min((n-2)/2, MAX_A2D_CHANNELS); i++) {
+            for (int i = 0; i < std::min((n-2)/2, N); i++) {
                 calFileCals[dsmId][devId][i][gain][bplr].push_back(d[2+i*2]);
                 calFileCals[dsmId][devId][i][gain][bplr].push_back(d[3+i*2]);
                 calFileTime[dsmId][devId][gain][bplr] = calTime;
@@ -296,8 +297,6 @@ bool AutoCalClient::Setup(DSMSensor* sensor)
 
     uint dsmId = sensor->getDSMId();
     uint devId = sensor->getSensorId();
-
-    readCalFile(sensor);
 
 #ifndef SIMULATE
     // establish an xmlrpc connection to this DSM
@@ -468,7 +467,10 @@ bool AutoCalClient::Setup(DSMSensor* sensor)
 
     dsmNames[dsmId] = dsmName;
     devNames[id(dsmId, devId)] = devName;
+    devNchannels[id(dsmId, devId)] = nChannels;
     lastTimeStamp = 0;
+
+    readCalFile(sensor);
 
     list<int>::iterator l;
     for ( l = voltageLevels["1T"].begin(); l != voltageLevels["1T"].end(); l++)
@@ -993,7 +995,7 @@ void AutoCalClient::DisplayResults()
             ostr << "# auto_cal results..." << std::endl;
             ostr << "# temperature: " << resultTemperature[dsmId][devId] << std::endl;
             ostr << "#  Date              Gain  Bipolar";
-            for (uint ix=0; ix<MAX_A2D_CHANNELS; ix++)
+            for (uint ix = 0; ix < devNchannels[id(dsmId, devId)]; ix++)
                 ostr << "  CH" << ix << "-off   CH" << ix << "-slope";
             ostr << std::endl;
 
@@ -1002,7 +1004,7 @@ void AutoCalClient::DisplayResults()
 
                 // find out if a channel was calibrated at this range
                 uint channel = 99;
-                for (uint ix=0; ix<MAX_A2D_CHANNELS; ix++) {
+                for (uint ix = 0; ix < devNchannels[id(dsmId, devId)]; ix++) {
                     if ( ( Channels->find(ix) != Channels->end() ) &&
                          ( Gains[dsmId][devId][ix] == GB[iGB].gain ) &&
                          ( Bplrs[dsmId][devId][ix] == GB[iGB].bplr ) ) {
@@ -1016,7 +1018,7 @@ void AutoCalClient::DisplayResults()
                     ostr << setw(6) << dec << GB[iGB].gain;
                     ostr << setw(9) << dec << GB[iGB].bplr;
 
-                    for (uint ix=0; ix<MAX_A2D_CHANNELS; ix++) {
+                    for (uint ix = 0; ix < devNchannels[id(dsmId, devId)]; ix++) {
                         if ( ( Channels->find(ix) != Channels->end() ) &&
                              ( Gains[dsmId][devId][ix] == GB[iGB].gain ) &&
                              ( Bplrs[dsmId][devId][ix] == GB[iGB].bplr ) )
