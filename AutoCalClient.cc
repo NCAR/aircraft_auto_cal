@@ -115,8 +115,8 @@ bool AutoCalClient::readCalFile(DSMSensor* sensor)
 
             // pre set with default slope and intercept values.
             for (int i = 0; i < MAX_A2D_CHANNELS; i++) {
-                calFileIntcp[dsmId][devId][i][1<<gain][bplr] = 0.0;
-                calFileSlope[dsmId][devId][i][1<<gain][bplr] = 1.0;
+                calFileCals[dsmId][devId][i][1<<gain][bplr].push_back(0.0);
+                calFileCals[dsmId][devId][i][1<<gain][bplr].push_back(1.0);
             }
         }
     }
@@ -159,8 +159,8 @@ bool AutoCalClient::readCalFile(DSMSensor* sensor)
             int bplr = (int)d[1];
 
             for (int i = 0; i < std::min((n-2)/2, MAX_A2D_CHANNELS); i++) {
-                calFileIntcp[dsmId][devId][i][gain][bplr] = d[2+i*2];
-                calFileSlope[dsmId][devId][i][gain][bplr] = d[3+i*2];
+                calFileCals[dsmId][devId][i][gain][bplr].push_back(d[2+i*2]);
+                calFileCals[dsmId][devId][i][gain][bplr].push_back(d[3+i*2]);
                 calFileTime[dsmId][devId][gain][bplr] = calTime;
             }
         }
@@ -945,7 +945,7 @@ void AutoCalClient::DisplayResults()
                     std::cout << std::endl;
 
                     // detect measured values outside of desired level
-                    if ( (aVoltageMean < (aVoltageLevel - 1.0)) || 
+                    if ( (aVoltageMean < (aVoltageLevel - 1.0)) ||
                          (aVoltageMean > (aVoltageLevel + 1.0)) )  {
 
                         if (detected[level]) continue;
@@ -978,8 +978,8 @@ void AutoCalClient::DisplayResults()
                 // store results for access by the Qt interface.
                 int gain = Gains[dsmId][devId][channel];
                 int bplr = Bplrs[dsmId][devId][channel];
-                resultIntcp[dsmId][devId][channel][gain][bplr] = c0[channel];
-                resultSlope[dsmId][devId][channel][gain][bplr] = c1[channel];
+                resultCals[dsmId][devId][channel][gain][bplr].push_back(c0[channel]);
+                resultCals[dsmId][devId][channel][gain][bplr].push_back(c1[channel]);
             }
             // compute temperature mean
             resultTemperature[dsmId][devId] =
@@ -1192,39 +1192,21 @@ float AutoCalClient::GetNewTemperature(uint dsmId, uint devId, uint chn)
 }
 
 
-float AutoCalClient::GetOldIntcp(uint dsmId, uint devId, uint chn)
+vector<double> AutoCalClient::GetOldCals(uint dsmId, uint devId, uint chn)
 {
     int gain = Gains[dsmId][devId][chn];
     int bplr = Bplrs[dsmId][devId][chn];
 
-    return calFileIntcp[dsmId][devId][chn][gain][bplr];
+    return calFileCals[dsmId][devId][chn][gain][bplr];
 }
 
 
-float AutoCalClient::GetNewIntcp(uint dsmId, uint devId, uint chn)
+vector<double> AutoCalClient::GetNewCals(uint dsmId, uint devId, uint chn)
 {
     int gain = Gains[dsmId][devId][chn];
     int bplr = Bplrs[dsmId][devId][chn];
 
-    return resultIntcp[dsmId][devId][chn][gain][bplr];
-}
-
-
-float AutoCalClient::GetOldSlope(uint dsmId, uint devId, uint chn)
-{
-    int gain = Gains[dsmId][devId][chn];
-    int bplr = Bplrs[dsmId][devId][chn];
-
-    return calFileSlope[dsmId][devId][chn][gain][bplr];
-}
-
-
-float AutoCalClient::GetNewSlope(uint dsmId, uint devId, uint chn)
-{
-    int gain = Gains[dsmId][devId][chn];
-    int bplr = Bplrs[dsmId][devId][chn];
-
-    return resultSlope[dsmId][devId][chn][gain][bplr];
+    return resultCals[dsmId][devId][chn][gain][bplr];
 }
 
 

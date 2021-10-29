@@ -100,9 +100,7 @@ void TestA2DPage::dispVolts()
         if ( acc->calActv[0][dsmId][devId][chn] == SKIP ) continue;
 
         // obtain current set of calibration coefficients for this channel
-        std::vector<double> _cals;
-        _cals.push_back( acc->GetOldIntcp(dsmId, devId, chn) );
-        _cals.push_back( acc->GetOldSlope(dsmId, devId, chn) );
+        std::vector<double> _cals = acc->GetOldCals(dsmId, devId, chn);
 
         // apply the coefficients to the raw measured values
         QString raw, mes;

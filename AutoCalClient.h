@@ -117,11 +117,8 @@ public:
     float GetOldTemperature(uint dsmId, uint devId, uint chn);
     float GetNewTemperature(uint dsmId, uint devId, uint chn);
 
-    float GetOldIntcp(uint dsmId, uint devId, uint chn);
-    float GetNewIntcp(uint dsmId, uint devId, uint chn);
-
-    float GetOldSlope(uint dsmId, uint devId, uint chn);
-    float GetNewSlope(uint dsmId, uint devId, uint chn);
+    vector<double> GetOldCals(uint dsmId, uint devId, uint chn);
+    vector<double> GetNewCals(uint dsmId, uint devId, uint chn);
 
     unsigned int nLevels;
 
@@ -229,16 +226,10 @@ private:
     map<uint, map<uint, map<uint, map<uint, dsm_time_t > > > > calFileTime;
 
     /// calFileIntcp[dsmId][devId][chn][gain][bplr]
-    map<uint, map<uint, map<uint, map<uint, map<uint, float > > > > > calFileIntcp;
-
-    /// calFileSlope[dsmId][devId][chn][gain][bplr]
-    map<uint, map<uint, map<uint, map<uint, map<uint, float > > > > > calFileSlope;
+    map<uint, map<uint, map<uint, map<uint, map<uint, vector<double> > > > > > calFileCals;
 
     /// resultIntcp[dsmId][devId][chn][gain][bplr]
-    map<uint, map<uint, map<uint, map<uint, map<uint, float > > > > > resultIntcp;
-
-    /// resultSlope[dsmId][devId][chn][gain][bplr]
-    map<uint, map<uint, map<uint, map<uint, map<uint, float > > > > > resultSlope;
+    map<uint, map<uint, map<uint, map<uint, map<uint, vector<double> > > > > > resultCals;
 
     level_a_type::iterator    iLevel;
     dsm_a_type::iterator      iDsm;

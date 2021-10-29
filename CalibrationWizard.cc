@@ -305,11 +305,11 @@ void AutoCalPage::selectionChanged(const QItemSelection &selected, const QItemSe
         OldTemperature[chn]->setText( QString::number( acc->GetOldTemperature(dsmId, devId, chn) ) );
         NewTemperature[chn]->setText( QString::number( acc->GetNewTemperature(dsmId, devId, chn) ) );
 
-        OldIntcp[chn]->setText( QString::number( acc->GetOldIntcp(dsmId, devId, chn) ) );
-        NewIntcp[chn]->setText( QString::number( acc->GetNewIntcp(dsmId, devId, chn) ) );
+        OldIntcp[chn]->setText( QString::number( acc->GetOldCals(dsmId, devId, chn)[0] ) );
+        NewIntcp[chn]->setText( QString::number( acc->GetNewCals(dsmId, devId, chn)[1] ) );
 
-        OldSlope[chn]->setText( QString::number( acc->GetOldSlope(dsmId, devId, chn) ) );
-        NewSlope[chn]->setText( QString::number( acc->GetNewSlope(dsmId, devId, chn) ) );
+        OldSlope[chn]->setText( QString::number( acc->GetOldCals(dsmId, devId, chn)[0] ) );
+        NewSlope[chn]->setText( QString::number( acc->GetNewCals(dsmId, devId, chn)[1] ) );
     }
 }
 
