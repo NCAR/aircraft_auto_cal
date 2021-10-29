@@ -173,8 +173,8 @@ bool Calibrator::setup(QString host)
                     cout << " dsmId: " << dsmId;
                     cout << " devId: " << devId;
                     cout << " chn: " << chn;
-                    cout << " Intcp: " << _acc->GetOldIntcp(dsmId, devId, chn);
-                    cout << " Slope: " << _acc->GetOldSlope(dsmId, devId, chn);
+                    cout << " Intcp: " << _acc->GetOldCals(dsmId, devId, chn)[0];
+                    cout << " Slope: " << _acc->GetOldCals(dsmId, devId, chn)[1];
                     cout << endl;
                 }
                 // default slopes and intersects to 1.0 and 0.0
