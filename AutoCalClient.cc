@@ -110,12 +110,13 @@ bool AutoCalClient::readCalFile(DSMSensor* sensor)
 
     // pre-fill with '0' in case a calFile is missing an entry
     // create unused (gain bplr) entries for (1 0) and (4 1) anyway
-    for( int gain = 0; gain < 3; gain++) {
-        for( int bplr = 0; bplr < 2; bplr++) {
+    for (int gain = 0; gain < 3; gain++) {
+        for (int bplr = 0; bplr < 2; bplr++) {
             calFileTime[dsmId][devId][1<<gain][bplr] = calTime;
 
             // pre set with default slope and intercept values.
             for (int i = 0; i < N; i++) {
+                calFileCals[dsmId][devId][i][1<<gain][bplr].clear();
                 calFileCals[dsmId][devId][i][1<<gain][bplr].push_back(0.0);
                 calFileCals[dsmId][devId][i][1<<gain][bplr].push_back(1.0);
             }
@@ -159,10 +160,11 @@ bool AutoCalClient::readCalFile(DSMSensor* sensor)
             int gain = (int)d[0];
             int bplr = (int)d[1];
 
+            calFileTime[dsmId][devId][gain][bplr] = calTime;
             for (int i = 0; i < std::min((n-2)/2, N); i++) {
+                calFileCals[dsmId][devId][i][gain][bplr].clear();
                 calFileCals[dsmId][devId][i][gain][bplr].push_back(d[2+i*2]);
                 calFileCals[dsmId][devId][i][gain][bplr].push_back(d[3+i*2]);
-                calFileTime[dsmId][devId][gain][bplr] = calTime;
             }
         }
         catch(const n_u::EOFException& e)
@@ -980,6 +982,7 @@ void AutoCalClient::DisplayResults()
                 // store results for access by the Qt interface.
                 int gain = Gains[dsmId][devId][channel];
                 int bplr = Bplrs[dsmId][devId][channel];
+                resultCals[dsmId][devId][channel][gain][bplr].clear();
                 resultCals[dsmId][devId][channel][gain][bplr].push_back(c0[channel]);
                 resultCals[dsmId][devId][channel][gain][bplr].push_back(c1[channel]);
             }
