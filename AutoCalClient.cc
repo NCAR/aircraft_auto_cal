@@ -98,7 +98,7 @@ void AutoCalClient::setTestVoltage(int dsmId, int devId)
 };
 
 
-bool AutoCalClient::readCalFile(DSMSensor* sensor)
+bool AutoCalClient::readCalFile(DSMSensor* sensor, string card)
 {
     std::cout << "AutoCalClient::readCalFile(" << sensor->getDSMName() << ":" << sensor->getDeviceName() << ")" << std::endl;
     uint dsmId = sensor->getDSMId();
@@ -147,13 +147,19 @@ bool AutoCalClient::readCalFile(DSMSensor* sensor)
 
     // Read CalFile  containing the following fields after the timeStamp
     // gain bipolar(1=true,0=false) intcp0 slope0 intcp1 slope1 ... intcp7 slope7
-    while (sysTime >= cf->nextTime().toUsecs()) {
-
-        int nd = 2 + MAX_A2D_CHANNELS * 2;
-        float d[nd];
+    // gpDAQ has four cals....
+    int nCals;
+    if (card == "gpDAQ")
+        nCals = 4; // gpDAQ uses 3rd order cal
+    else
+        nCals = 2; // all else are mx+b
+    int nd = 2 + N * nCals;
+    float d[nd];
+    while (sysTime >= cf->nextTime().toUsecs())
+    {
         try {
             n_u::UTime ut;
-            int n = cf->readCF(ut, d,nd);
+            int n = cf->readCF(ut, d, nd);
             calTime = ut.toUsecs();
             if (n < 2) continue;
 
@@ -161,10 +167,11 @@ bool AutoCalClient::readCalFile(DSMSensor* sensor)
             int bplr = (int)d[1];
 
             calFileTime[dsmId][devId][gain][bplr] = calTime;
-            for (int i = 0; i < std::min((n-2)/2, N); i++) {
+            // This does not coorectly push_back 4 cals.
+            for (int i = 0; i < std::min((n-2)/nCals, N); i++) {
                 calFileCals[dsmId][devId][i][gain][bplr].clear();
-                calFileCals[dsmId][devId][i][gain][bplr].push_back(d[2+i*2]);
-                calFileCals[dsmId][devId][i][gain][bplr].push_back(d[3+i*2]);
+                calFileCals[dsmId][devId][i][gain][bplr].push_back(d[2+i*nCals]);
+                calFileCals[dsmId][devId][i][gain][bplr].push_back(d[3+i*nCals]);
             }
         }
         catch(const n_u::EOFException& e)
@@ -361,9 +368,12 @@ bool AutoCalClient::Setup(DSMSensor* sensor)
     std::cout << "get_result: " << get_result.toXml() << std::endl;
 #endif
 
+    /* Parse XML for this sensor, validate against info returned from dsm/class above.
+     * Setup card on this end.
+     */
     list<SampleTag*>& tags = sensor->getSampleTags();
     list<SampleTag*>::const_iterator ti;
-    std::string card= get_result["card"];
+    std::string card = get_result["card"];
     for (ti = tags.begin(); ti != tags.end(); ++ti) {
         SampleTag* tag = *ti;
 
@@ -472,7 +482,7 @@ bool AutoCalClient::Setup(DSMSensor* sensor)
     devNchannels[id(dsmId, devId)] = nChannels;
     lastTimeStamp = 0;
 
-    readCalFile(sensor);
+    readCalFile(sensor, card);
 
     list<int>::iterator l;
     for ( l = voltageLevels["1T"].begin(); l != voltageLevels["1T"].end(); l++)

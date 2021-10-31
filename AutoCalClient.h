@@ -47,6 +47,7 @@ enum stateEnum { GATHER, DONE, DEAD };
 
 enum fillState { SKIP, PEND, EMPTY, FULL };
 
+// Card setup as returned by the dsm/card.
 struct a2d_setup
 {
     int gain[MAX_A2D_CHANNELS];    // gain settings
@@ -79,7 +80,7 @@ public:
 
     void setTestVoltage(int dsmId, int devId);
 
-    bool readCalFile(DSMSensor* sensor);
+    bool readCalFile(DSMSensor* sensor, string card);
 
     a2d_setup GetA2dSetup(int dsmId, int devId);
 

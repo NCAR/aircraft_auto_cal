@@ -173,14 +173,15 @@ bool Calibrator::setup(QString host, QString mode)
                 // DEBUG - print out the found calibration coeffients
                 uint dsmId = sensor->getDSMId();
                 uint devId = sensor->getSensorId();
-                for (uint chn=0; chn<8; chn++) {
-                    cout << __PRETTY_FUNCTION__;
-                    cout << " dsmId: " << dsmId;
-                    cout << " devId: " << devId;
-                    cout << " chn: " << chn;
-                    cout << " Intcp: " << _acc->GetOldCals(dsmId, devId, chn)[0];
-                    cout << " Slope: " << _acc->GetOldCals(dsmId, devId, chn)[1];
-                    cout << endl;
+                for (uint chn = 0; chn < 8; chn++) {
+                    if (_acc->GetOldCals(dsmId, devId, chn).size() > 1) {
+                        cout << __PRETTY_FUNCTION__;
+                        cout << " dsmId: " << dsmId << " devId: " << devId << " chn: " << chn;
+                        cout << " nCals: " << _acc->GetOldCals(dsmId, devId, chn).size();
+                        cout << " Intcp: " << _acc->GetOldCals(dsmId, devId, chn)[0];
+                        cout << " Slope: " << _acc->GetOldCals(dsmId, devId, chn)[1];
+                        cout << endl;
+                    }
                 }
                 // default slopes and intersects to 1.0 and 0.0
                 sensor->removeCalFiles();
