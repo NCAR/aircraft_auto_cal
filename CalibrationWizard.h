@@ -169,7 +169,7 @@ private:
     QButtonGroup *buttonGroup;
     QHBoxLayout *mainLayout;
 
-    enum { numA2DChannels = 16 };
+    enum { numA2DChannels = 8 };    // We only auto_cal ncar_a2d cards.
 
     QLabel *ChannelTitle;
     QLabel *VarNameTitle;

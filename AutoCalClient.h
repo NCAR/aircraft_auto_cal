@@ -175,12 +175,12 @@ private:
     map<uint, uint>   devNchannels;                    // indexed by devId
     map< int, uint>   slowestRate;                     // indexed by level
 
-    typedef vector<float>             data_d_type;
+    typedef vector<float>               data_d_type;
 
-    typedef map< int, data_d_type>     level_d_type;   // indexed by level
-    typedef map<uint, level_d_type>    channel_d_type; // indexed by chn
-    typedef map<uint, channel_d_type> device_d_type;   // indexed by devId
-    typedef map<uint, device_d_type>  dsm_d_type;      // indexed by dsmId
+    typedef map< int, data_d_type>      level_d_type;   // indexed by level
+    typedef map<uint, level_d_type>     channel_d_type; // indexed by chn
+    typedef map<uint, channel_d_type>   device_d_type;  // indexed by devId
+    typedef map<uint, device_d_type>    dsm_d_type;     // indexed by dsmId
 
     /// calData[dsmId][devId][chn][level]
     dsm_d_type calData;
