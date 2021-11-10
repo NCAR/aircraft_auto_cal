@@ -118,6 +118,7 @@ void TestA2DPage::dispVolts()
 
 void TestA2DPage::updateSelection()
 {
+    cout << "TestA2DPage::updateSelection" << endl;
     a2d_setup setup = acc->GetA2dSetup(dsmId, devId);
 
     for (int chn = 0; chn < numA2DChannels; chn++) {
@@ -252,6 +253,7 @@ void TestA2DPage::createGrid()
         vLvlBtn[-99][chn] = new QPushButton("off");
         vLvlBtn[  0][chn] = new QPushButton("0v");
         vLvlBtn[  1][chn] = new QPushButton("1v");
+        vLvlBtn[  2][chn] = new QPushButton("2.5v");
         vLvlBtn[  5][chn] = new QPushButton("5v");
         vLvlBtn[ 10][chn] = new QPushButton("10v");
         vLvlBtn[-10][chn] = new QPushButton("-10v");

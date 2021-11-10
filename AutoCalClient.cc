@@ -64,6 +64,11 @@ AutoCalClient::AutoCalClient():
     voltageLevels["--"] = volts;
 
     volts.push_back(0);
+    volts.push_back(2);
+    voltageLevels["gpDAQ"] = volts;
+
+    volts.clear();
+    volts.push_back(0);
     volts.push_back(1);
     volts.push_back(5);
     voltageLevels["4F"] = volts;
@@ -75,7 +80,14 @@ AutoCalClient::AutoCalClient():
     volts.push_back(-10);
     voltageLevels["1T"] = volts;
 
-    volts.push_front(-99);
+    volts.clear();
+    volts.push_back(-99);
+    volts.push_back(0);
+    volts.push_back(1);
+    volts.push_back(2);
+    volts.push_back(5);
+    volts.push_back(10);
+    volts.push_back(-10);
     voltageLevels["XX"] = volts;
 };
 
@@ -373,7 +385,7 @@ bool AutoCalClient::Setup(DSMSensor* sensor)
      */
     list<SampleTag*>& tags = sensor->getSampleTags();
     list<SampleTag*>::const_iterator ti;
-    std::string card = get_result["card"];
+    string card = get_result["card"];
     for (ti = tags.begin(); ti != tags.end(); ++ti) {
         SampleTag* tag = *ti;
 
@@ -436,7 +448,10 @@ bool AutoCalClient::Setup(DSMSensor* sensor)
 #endif
             // channel is available
             ostringstream gb;
-            gb << gain << (bplr ? "T" : "F");
+            if (card == "gpDAQ")
+                gb << card;
+            else
+                gb << gain << (bplr ? "T" : "F");
 
             sampleInfo[sampId].channel[varId++] = channel;
 
@@ -480,6 +495,7 @@ bool AutoCalClient::Setup(DSMSensor* sensor)
     dsmNames[dsmId] = dsmName;
     devNames[id(dsmId, devId)] = devName;
     devNchannels[id(dsmId, devId)] = nChannels;
+    cardType[id(dsmId, devId)] = card;
     lastTimeStamp = 0;
 
     readCalFile(sensor, card);
@@ -1158,7 +1174,10 @@ list<int> AutoCalClient::GetVoltageLevels(uint dsmId, uint devId, uint chn)
     int bplr = Bplrs[dsmId][devId][chn];
 
     ostringstream gb;
-    gb << gain << (bplr ? "T" : "F");
+    if (cardType[id(dsmId, devId)] == "gpDAQ")
+        gb << cardType[id(dsmId, devId)];
+    else
+        gb << gain << (bplr ? "T" : "F");
 
     return voltageLevels[gb.str()];
 }

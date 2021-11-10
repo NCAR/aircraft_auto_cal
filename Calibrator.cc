@@ -238,7 +238,7 @@ void Calibrator::run()
             while (_testVoltage) {
                 _sis->readSamples();  // see AutoCalClient::receive
                 if (_canceled) {
-                    cout << "canceling..." << endl;
+                    cout << "Canceling diagnostics..." << endl;
                     state = DONE;
                     break;
                 }
@@ -257,7 +257,7 @@ void Calibrator::run()
                 while ( _testVoltage || !_acc->Gathered() ) {
 
                     if (_canceled) {
-                        cout << "canceling..." << endl;
+                        cout << "Canceling calibration..." << endl;
                         state = DONE;
                         break;
                     }
