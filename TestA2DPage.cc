@@ -49,7 +49,7 @@ TestA2DPage::TestA2DPage(Calibrator *calib, AutoCalClient *acc, QWidget *parent)
     setTitle(tr("Test A2Ds"));
     setSubTitle(tr("Select a card from the tree to list channels."));
     setFinalPage(true);
-    setMinimumWidth(880);
+    setMinimumWidth(900);
 }
 
 
@@ -240,11 +240,11 @@ void TestA2DPage::createGrid()
         layout->addWidget(VarName[chn], chn+1, 1);
 
         RawVolt[chn] = new QLabel;
-        RawVolt[chn]->setStyleSheet("QLabel { min-width: 50px ; max-width: 50px }");
+        RawVolt[chn]->setStyleSheet("QLabel { min-width: 60px ; max-width: 60px }");
         layout->addWidget(RawVolt[chn], chn+1, 2);
 
         MesVolt[chn] = new QLabel;
-        MesVolt[chn]->setStyleSheet("QLabel { min-width: 50px ; max-width: 50px }");
+        MesVolt[chn]->setStyleSheet("QLabel { min-width: 60px ; max-width: 60px }");
         layout->addWidget(MesVolt[chn], chn+1, 3);
 
         // group buttons by channel
@@ -272,8 +272,8 @@ void TestA2DPage::createGrid()
                     this,              SLOT(TestVoltage()));
         }
     }
-//  gridGroupBox->setMinimumSize(450, 600); // width, height
-    gridGroupBox->setStyleSheet(" QGroupBox { min-width: 450px }");
+//  gridGroupBox->setMinimumSize(470, 600); // width, height
+    gridGroupBox->setStyleSheet(" QGroupBox { min-width: 470 }");
     gridGroupBox->setLayout(layout);
 }
 
