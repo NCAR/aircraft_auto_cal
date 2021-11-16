@@ -1192,6 +1192,21 @@ string AutoCalClient::GetVarName(uint dsmId, uint devId, uint chn)
     return QStrBuf.str();
 }
 
+float AutoCalClient::GetVoltageData(uint dsmId, uint devId, uint chn)
+{
+    float voltage = testData[dsmId][devId][chn];
+    // IFSR = 1: volts = 5 * (codes / 2^(20-1) - 1) = -5 + 5 / 524288 * codes
+    // IFSR = 0: volts = 10 * (codes / 2^(20-1) - 1) = -10 + 10 / 524288 * codes
+    if (cardType[id(dsmId, devId)] == "gpDAQ")
+    {
+        if (Gains[dsmId][devId][chn] == 1)
+          voltage = -10.0 + 10.0 / 524288 * voltage;
+        if (Gains[dsmId][devId][chn] == 2)
+          voltage = -5.0 + 5.0 / 524288 * voltage;
+    }
+
+    return voltage;
+}
 
 string AutoCalClient::GetOldTimeStamp(uint dsmId, uint devId, uint chn)
 {

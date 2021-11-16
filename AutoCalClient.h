@@ -80,8 +80,6 @@ public:
 
     void setTestVoltage(int dsmId, int devId);
 
-    bool readCalFile(DSMSensor* sensor, string card);
-
     a2d_setup GetA2dSetup(int dsmId, int devId);
 
     bool Setup(DSMSensor* sensor);
@@ -111,6 +109,13 @@ public:
     list<int> GetVoltageLevels(uint dsmId, uint devId, uint chn);
 
     string GetVarName(uint dsmId, uint devId, uint chn);
+
+    /**
+     * For sensor classes that return a Vdc, do nothing, just return the test
+     * data.  For gpDAQ which returns the raw counts, scale it to uncalibrated
+     * voltage.
+     */
+    float GetVoltageData(uint dsmId, uint devId, uint chn);
 
     string GetOldTimeStamp(uint dsmId, uint devId, uint chn);
     string GetNewTimeStamp(uint dsmId, uint devId, uint chn);
@@ -145,6 +150,8 @@ public slots:
     void TestVoltage(int channel, int level);
 
 private:
+    bool readCalFile(DSMSensor* sensor, string card);
+
     string ChnSetDesc(unsigned int val);
 
     bool testVoltage;

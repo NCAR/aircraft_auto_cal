@@ -104,10 +104,9 @@ void TestA2DPage::dispVolts()
 
         // apply the coefficients to the raw measured values
         QString raw, mes;
-        float voltage = acc->testData[dsmId][devId][chn];
-        float applied = numeric::PolyEval(_cals, voltage);
+        float applied = numeric::PolyEval(_cals, acc->testData[dsmId][devId][chn]);
         QTextStream rstr(&raw);
-        rstr << qSetFieldWidth(7) << qSetRealNumberPrecision(4) << voltage;
+        rstr << qSetFieldWidth(7) << qSetRealNumberPrecision(4) << acc->GetVoltageData(dsmId, devId, chn);
         QTextStream mstr(&mes);
         mstr << qSetFieldWidth(7) << qSetRealNumberPrecision(4) << applied;
         RawVolt[chn]->setText( raw );
