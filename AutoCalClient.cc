@@ -71,6 +71,7 @@ AutoCalClient::AutoCalClient():
     volts.push_back(0);
     volts.push_back(1);
     volts.push_back(5);
+    voltageLevels["dmmat"] = volts;
     voltageLevels["4F"] = volts;
     voltageLevels["2T"] = volts;
 
@@ -1174,7 +1175,8 @@ list<int> AutoCalClient::GetVoltageLevels(uint dsmId, uint devId, uint chn)
     int bplr = Bplrs[dsmId][devId][chn];
 
     ostringstream gb;
-    if (cardType[id(dsmId, devId)] == "gpDAQ")
+    if (cardType[id(dsmId, devId)] == "gpDAQ" ||
+        cardType[id(dsmId, devId)] == "dmmat")
         gb << cardType[id(dsmId, devId)];
     else
         gb << gain << (bplr ? "T" : "F");
