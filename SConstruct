@@ -18,7 +18,7 @@ opts.AddVariables(('PREFIX',
 opts.Update(env)
 
 # Remove -Wno-deprecated once nidas has throw's removed.
-env['CXXFLAGS'] = [ '-Wall','-g', '-std=c++11' ]
+env['CXXFLAGS'] = [ '-Werror', '-Wall','-g', '-std=c++20' ]
 
 sources = Split("""
     main.cc

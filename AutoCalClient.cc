@@ -29,6 +29,7 @@
 #include <nidas/core/Variable.h>
 #include <nidas/core/CalFile.h>
 #include <nidas/core/SocketAddrs.h>
+#include <nidas/util/ParseException.h>
 
 #include <xmlrpcpp/XmlRpc.h>
 //#include <xmlrpcpp/XmlRpcClient.h>
